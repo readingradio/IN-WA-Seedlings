@@ -1,0 +1,4 @@
+"s.small","s.big","index","stat","p.value","otu","Phylum","Class","Order","Family","Genus","Taxon.assignment"
+0,1,2,0.476731294622796,0.0188,"Pezizo.OTU32","Ascomycota","Sordariomycetes","Microascales","Microascaceae","Petriella","Petriella_setifera"
+0,1,2,0.476731294622796,0.0192,"Trichocladium_sp","Ascomycota","Sordariomycetes","Sordariales","Chaetomiaceae","Trichocladium","Pezizo.OTU28.1"
+0,1,2,0.426401432711221,0.0486,"Rhizoc.OTU8","Basidiomycota","Agaricomycetes","Cantherellales","Ceratobasidiaceae","Thanatephorus","RS-AG1-IA_AG1_IA,Thanatephorus_sasakii_AG1CCBS14082,Thanatephorus_pendulus_AG1ACBS70082,Thanatephorus_sasakii_AG1CCBS52396,Thanatephorus_sasakii_AG1CCBS20784,RS-AG1-IA_1802_KB"

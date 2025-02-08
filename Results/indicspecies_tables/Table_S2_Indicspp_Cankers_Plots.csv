@@ -1,0 +1,4 @@
+"s.IN-NE","s.IN-SW","s.WA-N","s.WA-SE","s.WA-SW","index","stat","p.value","otu","Phylum","Class","Order","Family","Genus","Taxon.assignment"
+0,0,1,1,1,25,0.776818239635185,1e-04,"Pezizo.OTU3","Ascomycota","Dothideomycetes","Pleosporales","Pleosporaceae","Alternaria","Alternaria_alternata,Alternaria_sp"
+1,1,0,0,0,6,0.831756637868551,1e-04,"Pezizo.OTU9","Ascomycota","Sordariomycetes","Diaporthales","Diaporthaceae","Diaporthe","Diaporthe_longicolla"
+1,0,0,0,0,1,0.417153758115488,0.04,"Pezizo.OTU7","Ascomycota","Sordariomycetes","Hypocreales","Nectriaceae","Fusarium","Fusarium_fujikuroi"
