@@ -21,7 +21,7 @@ library(patchwork)
 
 	#setwd("/Users/will1809/OneDrive - purdue.edu/Dissertation/GMW.Dissertation.Analyses/CH5")
 	
-	isolate_table <- read.csv("Greenhouse2020_IsolateData_Compiled.June2021.csv")
+	isolate_table <- read.csv("Isolates/Greenhouse2020_IsolateData_Compiled.June2021.csv")
 	
 	isolate_table[!is.na(isolate_table$voucher),"Isolate"] %>% length
 	isolate_table[!is.na(isolate_table$voucher),"Tissue"] %>% table
@@ -52,7 +52,7 @@ library(patchwork)
 
 # read in experiment metadata
 
-	design <- read.csv('MorphoGH2020Expt1.csv')[,c(1:3,6)]
+	design <- read.csv('Phenotypes/MorphoGH2020Expt1.csv')[,c(1:3,6)]
 	str(design)
 	design$SampleID <- paste(as.character(design$State), as.character(design$Block), as.character(design$Rep), sep="-")
 	design$SampleID # 75 plants
@@ -496,7 +496,6 @@ stackplottheme<- theme(
 
 
 ###########################
-# FIG 3B                  #
 # plot by state and order #
 ###########################
 
@@ -579,7 +578,6 @@ stackplottheme<- theme(
 	print(all.plot.state.order+ scale_fill_manual(values= colorss[1:n.order]), vp=vp1)
 
 	######################################################
-	#### FIG 2											    	#
 	#### plot by state, block, inoculation and family ####
 	######################################################
 	
@@ -623,6 +621,9 @@ stackplottheme<- theme(
 	windows(5,5)
 	
 #	ggplot()+
+	library(ggpubr)
+	
+	levels(newdata_gg$tissuelabs) <- paste(levels(newdata_gg$tissuelabs), "\n", sep="")
 	
 	ggbp <-
 	  
@@ -644,7 +645,7 @@ stackplottheme<- theme(
 	          legend.title =element_blank(),
 	          axis.title   =element_text(size=15),
 	          legend.position = 'right')+
-	  labs(y = "Shannon diversity\n", x = "\nLocation & Inoculation") +
+	  labs(y = "\nShannon diversity\n", x = "\nLocation & Inoculation") +
 	  scale_y_continuous(breaks = c(0,.5,1,1.5,2,2.5,3), limits=c(0,2.75))#+
 #	  geom_point(data= toplot2_df,
 #	             aes(x = treatlong,
@@ -659,21 +660,25 @@ stackplottheme<- theme(
 	
 	
 	########## COMPOSITE NEW
-	windows(width=12, height=5)#; layout(mat=rbind(c(1,1,1,2,2,2,2,2),c(1,1,1,2,2,2,2,2))); par(xpd=T, oma=c(0,0,0,0), mar=c(3,4,5,0), cex=1.1)
+	windows(width=6.5, height=6.5)#; layout(mat=rbind(c(1,1,1,2,2,2,2,2),c(1,1,1,2,2,2,2,2))); par(xpd=T, oma=c(0,0,0,0), mar=c(3,4,5,0), cex=1.1)
 	
 	### LEFT PANEL
 	library(devEMF)
 	library(Cairo)
 	setwd('Revision_Jan_2025')
 	#emf(file = "Figures_ordered/Fig_2AB_new_correct_dimensions.emf",12,5,emfPlus=T)
-	svg(file = "Figures_ordered/Fig_2AB_new_correct_dimensions.svg",12,5)
-	ggbp +
+	svg(file = "Fig_2AB_vertical_march2025.svg",6.5,6.5)
+	(ggbp + theme(axis.text.x = element_blank(),
+	              axis.line.y = element_line(),
+	              axis.ticks.y = element_line()) +
+	    coord_cartesian(clip = "off")) +
 	  (all.plot.state.order2+
-	         labs(y = "Relative abundance\n",x = "\nLocation & Inoculation")+
+	         labs(y = "\nRelative abundance\n",x = "\nLocation & Inoculation")+
 	         scale_fill_manual(values= colorss[1:n.order])+
 	         theme(axis.title.y = element_text(size = 15),
-	               axis.title   =element_text(size=15))) +
-	  plot_layout(ncol = 2, nrow = 1)+#, widths = c(2,3))+
+	               axis.title   = element_text(size=15),
+	               strip.text = element_blank())) +
+	  plot_layout(ncol = 1, nrow = 2, axes = "collect_x")+#, widths = c(2,3))+
 	  #egg::tag_facet()
 	  plot_annotation(tag_levels = 'A')
 	dev.off()
@@ -730,10 +735,11 @@ stackplottheme<- theme(
 				
 	r.plot.state.fam.data$StateBlockInoc <- factor(r.plot.state.fam.data$StateBlockInoc, levels=unique(r.plot.state.fam.data$StateBlockInoc)[c(1,2,4,3,6,5,8,7)])
 
-	levels(r.plot.state.fam.data$StateBlockInoc) <- c("IN Plot 1 (Gm)", 		"IN Plot 2 (Gm)",
-													"WA Plot 1 (Control)", 	"WA Plot 1 (Gm)",
-													"WA Plot 2 (Control)", 	"WA Plot 2 (Gm)",
-													"WA Plot 3 (Control)", 	"WA Plot 3 (Gm)")
+	levels(r.plot.state.fam.data$StateBlockInoc) <-
+	  c("IN P1 (Gm)", 		"IN P2 (Gm)",
+	    "WA P1 (Sham)", 	"WA P1 (Gm)",
+	    "WA P2 (Sham)", 	"WA P2 (Gm)",
+	    "WA P3 (Sham)", 	"WA P3 (Gm)")
 
 	n.fams <- length(unique(r.plot.state.fam.data$Family))
 
@@ -751,7 +757,7 @@ stackplottheme<- theme(
 
 # canker necrosis area and composition
 
-	necrosis <- read.csv ("WA-IN-Transplant2019-20.Necrosis.csv")
+	necrosis <- read.csv ("Phenotypes/WA-IN-Transplant2019-20.Necrosis.csv")
 	necrosis$SampleID <- paste(necrosis$State, necrosis$Block, necrosis$Plant, sep="-")
 	necrosis <- left_join(necrosis, design[,4:5], by="SampleID")
 	necrosis <- necrosis[necrosis$Inoculation == "Gm",]
@@ -790,6 +796,37 @@ stackplottheme<- theme(
 		with(necr.summary[necr.summary$Area.8.bins == 8, ], paste(min(Area.mean), "-", max(Area.mean), "mm²")))
 	n.fams <- length(unique(root.quantile8.plot.data.fam$Family))
 
+	library(tanagR)
+	
+		colorss<-c(tanagr_palette("buthraupis_montana")[c(1,4,5)], # 3
+				tanagr_palette("tangara_velia")[c(1,3,4,5)],			#+4=7
+				tanagr_palette("stilpnia_preciosa")[c(1:5)],			#+5=12
+				tanagr_palette("chlorornis_riefferii")[c(1:2)],		#+2=14
+				tanagr_palette("ramphocelus_sanguinolentus")[c(4:5)],#16
+				tanagr_palette("dacnis_berlepschi")[3:4],				#+2=18
+				tanagr_palette("cyanerpes_cyaneus")[2:3],				#+2=20
+				tanagr_palette("bangsia_edwardsi")[c(1,3)],			#+2=22
+				tanagr_palette("tangara_chilensis")[c(1,5)])
+	
+	#	tanagr_select <- scale_fill_manual(values=colorss)
+	
+	colorscheme1<-	 c("#ACD000",
+	                  "#8B5B06",
+	                  "#345896",
+	                  "#4D820C",
+	                  "#F1ED7F",
+	                  "#3A170E",
+	                  "#004D6B",
+	                  "#302F35",
+	                  "#E93924",
+	                  "#73DBDA",
+	                  "#D4940E",
+	                  "#AEC7E0",
+	                  "#020104")
+	
+	#colorss<-colorscheme1
+	tanagr_select <- scale_fill_manual(values=colorss)
+	
 r.plot.8.fam <- root.quantile8.plot.data.fam %>%
 		ggplot(aes(x=Area.8.bins, y=relabund, fill=Family)) +
 			geom_bar(aes(), stat="identity", position="fill", size=0)+
@@ -800,15 +837,35 @@ r.plot.8.fam <- root.quantile8.plot.data.fam %>%
 # COMPOSITE FIG 5A + 5B                            #
 ####################################################
 
-p1 <- r.plot.state.fam + ggtitle("A")+ tanagr_select + theme(legend.position = "none", axis.text.x=element_text(size = 10, angle = 45, hjust = 1), plot.margin = unit(c(0,5,0,0), "lines"))
-p2 <- r.plot.8.fam + ggtitle("B")+ tanagr_select + theme(legend.position = "none", axis.text.x=element_text(size = 10, angle = 45, hjust = 1), plot.margin = unit(c(0,5,0,0), "lines"))
-leg<- get_legend(r.plot.8.fam + tanagr_select + guides(fill=guide_legend(ncol=1)) )
+p1 <- r.plot.state.fam + ggtitle("A")+ #labs(tag="A")+ 
+  tanagr_select +
+  theme(#legend.position = "none",
+        axis.text.x=element_text(size = 10, angle = 45, hjust = 1),
+        axis.title.y=element_text(size = 15),
+        axis.text.y=element_text(size = 12),
+        plot.margin = unit(c(0,.5,-1,0), "cm"))
+p2 <- r.plot.8.fam + ggtitle("B")+ #labs(tag="B")+ 
+  tanagr_select +
+  theme(#legend.position = "none",
+        axis.text.x=element_text(size = 10, angle = 45, hjust = 1),
+        axis.title.y=element_text(size = 15),
+        axis.text.y=element_text(size = 12),
+        plot.margin = unit(c(-1,.5,0,0), "cm"))
+#leg<- get_legend(r.plot.8.fam + tanagr_select + guides(fill=guide_legend(ncol=1)) )
 
 #windows();ggarrange(ggarrange(p1, p2, ncol=1), leg, ncol=2)
 
-windows(width=8,height=7)
-grid.arrange(p1 ,p2 ,leg,heights=c(1.1,1),widths=c(6,2),layout_matrix=rbind(c(1,3),c(2,3)))
+#windows(width=6.5,height=7)
 
+svg("Figure_5_March2025.svg", 6.5, 7)
+#grid.arrange(p1 ,p2, leg, heights=c(1.1,1), widths=c(6,2), layout_matrix=rbind(c(1,3),c(2,3)),
+#             padding = unit(0, "cm"))
+
+(p1 + ylab("Relative abundance\n") + guides(fill=guide_legend(ncol=1)))+
+  (p2 + ylab("Relative abundance\n") + guides(fill=guide_legend(ncol=1)))+
+  plot_layout(ncol = 1, guides="collect", axis_titles="collect")
+
+dev.off()
 
 #########################################################
 #                                                       #
@@ -829,10 +886,16 @@ print(c.plot.state.block.inoc.genus.data, n = 104)
 
 c.plot.state.block.inoc.genus.data$StateBlockInoc <- factor(c.plot.state.block.inoc.genus.data$StateBlockInoc, levels=unique(c.plot.state.block.inoc.genus.data$StateBlockInoc)[c(1,2,4,3,6,5,8,7)])
 
-levels(c.plot.state.block.inoc.genus.data$StateBlockInoc) <- c("IN Plot 1 (Gm)", 		"IN Plot 2 (Gm)",
-													"WA Plot 1 (Control)", 	"WA Plot 1 (Gm)",
-													"WA Plot 2 (Control)", 	"WA Plot 2 (Gm)",
-													"WA Plot 3 (Control)", 	"WA Plot 3 (Gm)")
+levels(c.plot.state.block.inoc.genus.data$StateBlockInoc) <-
+#                        c("IN Plot 1 (Gm)", 		"IN Plot 2 (Gm)",
+#													"WA Plot 1 (Control)", 	"WA Plot 1 (Gm)",
+#													"WA Plot 2 (Control)", 	"WA Plot 2 (Gm)",
+#													"WA Plot 3 (Control)", 	"WA Plot 3 (Gm)")
+  
+  c("IN P1 (Gm)", 		"IN P2 (Gm)",
+    "WA P1 (Sham)", 	"WA P1 (Gm)",
+    "WA P2 (Sham)", 	"WA P2 (Gm)",
+    "WA P3 (Sham)", 	"WA P3 (Gm)")
 
 n.genera <- length(unique(c.plot.state.block.inoc.genus.data$Genus))
 
@@ -842,8 +905,16 @@ c.plot.state.genus <- c.plot.state.block.inoc.genus.data %>%
   		xlab("") +
   		ylab("") + stackplottheme
 
-windows(width=8, height=5); c.plot.state.genus+scale_fill_manual(values= colorss[1:n.genera+5])+theme(legend.text=element_text(size=9, face="italic"))
+windows(width=7, height=5);
 
+svg("Figure_4_March2025.svg",7,5)
+c.plot.state.genus+
+  ylab("Relative abundance\n")+
+  scale_fill_manual(values= colorss[1:n.genera+5])+
+  theme(legend.text=element_text(size=9, face="italic"),
+        axis.title.y=element_text(size = 15),
+        axis.text.y=element_text(size = 12))
+dev.off()
 ##############################
 ##                           #
 ## ADONIS , NMDS & HEATMAPS  #
@@ -1218,10 +1289,10 @@ rowSums(r_otu.rarified)>0
   
   design %>% head
   
-  cankers<-read.csv("WA-IN-Transplant2019-20.Necrosis.csv" )  %>%
+  cankers<-read.csv("Phenotypes/WA-IN-Transplant2019-20.Necrosis.csv" )  %>%
     summaryBy(Area ~ State + Block + Plant, .) %>%
     rename(Rep=Plant) %>%
-    left_join(read.csv("MorphoGH2020Expt1.csv")[,1:6]) %>%
+    left_join(read.csv("Phenotypes/MorphoGH2020Expt1.csv")[,1:6]) %>%
     left_join(design)
   
   rownames(cankers)<-cankers$SampleID
@@ -1782,11 +1853,12 @@ rowSums(r_otu.rarified)>0
 #	  ggca_all,
 #	  nrow=2, common.legend=T, legend="right",
 #	  legend.grob = grid.arrange(get_legend(gg2), get_legend(ggca_all)))
-	
+	windows(10,8)
 	library(devEMF)
 	library(Cairo)
-	setwd('Revision_Jan_2025')
-	emf(file = "Fig_composite_new.emf",10,8,emfPlus=T)
+	#setwd('Revision_Jan_2025')
+	#emf(file = "Fig_composite_new.emf",10,8,emfPlus=T)
+	svg("Figure_3_March2025_3.svg", 10, 8)
 	grid.arrange(
 	  egg::tag_facet(gg2+scale_y_continuous(labels=scaleFUN)+theme(legend.position="none"), tag_pool=c("A","B"), open="", close="", size = 6),
 	  egg::tag_facet(ggca_all+scale_y_continuous(labels=scaleFUN)+theme(legend.position="none"), tag_pool=c("C","D"), open="", close="", size = 6),
